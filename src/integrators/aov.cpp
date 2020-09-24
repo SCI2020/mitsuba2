@@ -94,9 +94,9 @@ public:
                 m_aov_names.push_back(item[0]);
             } else if (item[1] == "position") {
                 m_aov_types.push_back(Type::Position);
-                m_aov_names.push_back(item[0] + ".X");
-                m_aov_names.push_back(item[0] + ".Y");
-                m_aov_names.push_back(item[0] + ".Z");
+                m_aov_names.push_back(item[0] + "X");
+                m_aov_names.push_back(item[0] + "Y");
+                m_aov_names.push_back(item[0] + "Z");
             } else if (item[1] == "uv") {
                 m_aov_types.push_back(Type::UV);
                 m_aov_names.push_back(item[0] + ".U");
@@ -108,9 +108,9 @@ public:
                 m_aov_names.push_back(item[0] + ".Z");
             } else if (item[1] == "sh_normal") {
                 m_aov_types.push_back(Type::ShadingNormal);
-                m_aov_names.push_back(item[0] + ".X");
-                m_aov_names.push_back(item[0] + ".Y");
-                m_aov_names.push_back(item[0] + ".Z");
+                m_aov_names.push_back(item[0] + "x");
+                m_aov_names.push_back(item[0] + "y");
+                m_aov_names.push_back(item[0] + "z");
             } else if (item[1] == "dp_du") {
                 m_aov_types.push_back(Type::dPdU);
                 m_aov_names.push_back(item[0] + ".X");
@@ -141,12 +141,12 @@ public:
             m_aov_types.push_back(Type::IntegratorRGBA);
             std::vector<std::string> aovs = integrator->aov_names();
             for (auto name: aovs)
-                m_aov_names.push_back(kv.first + "." + name);
+                m_aov_names.push_back(kv.first + "" + name);
             m_integrators.push_back({ integrator, aovs.size() });
-            m_aov_names.push_back(kv.first + ".R");
-            m_aov_names.push_back(kv.first + ".G");
-            m_aov_names.push_back(kv.first + ".B");
-            m_aov_names.push_back(kv.first + ".A");
+            m_aov_names.push_back(kv.first + "R");
+            m_aov_names.push_back(kv.first + "G");
+            m_aov_names.push_back(kv.first + "B");
+            m_aov_names.push_back(kv.first + "A");
         }
 
         if (m_aov_names.empty())
