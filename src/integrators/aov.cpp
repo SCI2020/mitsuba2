@@ -94,9 +94,9 @@ public:
                 m_aov_names.push_back(item[0]);
             } else if (item[1] == "position") {
                 m_aov_types.push_back(Type::Position);
-                m_aov_names.push_back(item[0] + "X");
-                m_aov_names.push_back(item[0] + "Y");
-                m_aov_names.push_back(item[0] + "Z");
+                m_aov_names.push_back(item[0] + "Q");
+                m_aov_names.push_back(item[0] + "P");
+                m_aov_names.push_back(item[0] + "E");
             } else if (item[1] == "uv") {
                 m_aov_types.push_back(Type::UV);
                 m_aov_names.push_back(item[0] + ".U");
