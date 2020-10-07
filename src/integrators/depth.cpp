@@ -27,7 +27,7 @@ public:
         SurfaceInteraction3f si = scene->ray_intersect(ray, active);
 
         return {
-            select(si.is_valid(), si.t, 1.f),
+            select(si.is_valid(), si.t, 1000000000),
             si.is_valid()
         };
     }
