@@ -2,8 +2,8 @@
 
 #include <mitsuba/core/spectrum.h>
 #include <mitsuba/core/transform.h>
-#include <mitsuba/render/endpoint.h>
 #include <mitsuba/core/vector.h>
+#include <mitsuba/render/endpoint.h>
 #include <mitsuba/render/film.h>
 #include <mitsuba/render/fwd.h>
 #include <mitsuba/render/interaction.h>
@@ -58,9 +58,8 @@ public:
      *    sensor profile and the actual used sampling density function.
      */
     virtual std::pair<RayDifferential3f, Spectrum>
-    sample_ray_differential(Float time, Float sample1,
-                            const Point2f &sample2, const Point2f &sample3,
-                            Mask active = true) const;
+    sample_ray_differential(Float time, Float sample1, const Point2f &sample2,
+                            const Point2f &sample3, Mask active = true) const;
 
     //! @}
     // =============================================================
@@ -116,7 +115,8 @@ public:
         callback->put_object("sampler", m_sampler.get());
     }
 
-    void parameters_changed(const std::vector<std::string> &/*keys*/ = {}) override {
+    void parameters_changed(
+        const std::vector<std::string> & /*keys*/ = {}) override {
         m_resolution = ScalarVector2f(m_film->crop_size());
     }
 
@@ -133,7 +133,6 @@ protected:
     ScalarFloat m_shutter_open;
     ScalarFloat m_shutter_open_time;
 };
-
 
 /**
  * \brief Projective camera interface
@@ -192,15 +191,15 @@ protected:
 /// Helper function to parse the field of view field of a camera
 extern MTS_EXPORT_RENDER float parse_fov(const Properties &props, float aspect);
 
-template <typename Float> Transform<Point<Float, 4>>
+template <typename Float>
+Transform<Point<Float, 4>>
 perspective_projection(const Vector<int, 2> &film_size,
                        const Vector<int, 2> &crop_size,
-                       const Vector<int, 2> &crop_offset,
-                       Float fov_x,
+                       const Vector<int, 2> &crop_offset, Float fov_x,
                        Float near_clip, Float far_clip) {
 
-    using Vector2f = Vector<Float, 2>;
-    using Vector3f = Vector<Float, 3>;
+    using Vector2f    = Vector<Float, 2>;
+    using Vector3f    = Vector<Float, 3>;
     using Transform4f = Transform<Point<Float, 4>>;
 
     Vector2f film_size_f = Vector2f(film_size),
@@ -228,6 +227,42 @@ perspective_projection(const Vector<int, 2> &film_size,
            Transform4f::scale(Vector3f(-0.5f, -0.5f * aspect, 1.f)) *
            Transform4f::translate(Vector3f(-1.f, -1.f / aspect, 0.f)) *
            Transform4f::perspective(fov_x, near_clip, far_clip);
+}
+
+template <typename Float>
+Transform<Point<Float, 4>> orthographic_projection(
+    const Vector<int, 2> &film_size, const Vector<int, 2> &crop_size,
+    const Vector<int, 2> &crop_offset, Float near_clip, Float far_clip) {
+
+    using Vector2f    = Vector<Float, 2>;
+    using Vector3f    = Vector<Float, 3>;
+    using Transform4f = Transform<Point<Float, 4>>;
+
+    Vector2f film_size_f = Vector2f(film_size),
+             rel_size    = Vector2f(crop_size) / film_size_f,
+             rel_offset  = Vector2f(crop_offset) / film_size_f;
+
+    Float aspect = film_size_f.x() / film_size_f.y();
+
+    /**
+     * These do the following (in reverse order):
+     *
+     * 1. Create transform from camera space to [-1,1]x[-1,1]x[0,1] clip
+     *    coordinates (not taking account of the aspect ratio yet)
+     *
+     * 2+3. Translate and scale to shift the clip coordinates into the
+     *    range from zero to one, and take the aspect ratio into account.
+     *
+     * 4+5. Translate and scale the coordinates once more to account
+     *     for a cropping window (if there is any)
+     */
+    return Transform4f::scale(
+               Vector3f(1.f / rel_size.x(), 1.f / rel_size.y(), 1.f)) *
+           Transform4f::translate(
+               Vector3f(-rel_offset.x(), -rel_offset.y(), 0.f)) *
+           Transform4f::scale(Vector3f(-0.5f, -0.5f * aspect, 1.f)) *
+           Transform4f::translate(Vector3f(-1.f, -1.f / aspect, 0.f)) *
+           Transform4f::orthographic(near_clip, far_clip);
 }
 
 //! @}
