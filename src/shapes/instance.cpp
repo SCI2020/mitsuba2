@@ -37,7 +37,7 @@ details on how to create instances, refer to the :ref:`shape-shapegroup` plugin.
         :width: 100%
         :align: center
 
-    The Stanford bunny loaded a single time and instanciated 1365 times (equivalent to 100 million
+    The Stanford bunny loaded a single time and instantiated 1365 times (equivalent to 100 million
     triangles)
 
 .. warning::
@@ -53,10 +53,9 @@ template <typename Float, typename Spectrum>
 class Instance final: public Shape<Float, Spectrum> {
 public:
     MTS_IMPORT_BASE(Shape, m_id, m_to_world, m_to_object)
-    MTS_IMPORT_TYPES(BSDF)
+    MTS_IMPORT_TYPES(BSDF, ShapeGroup)
 
     using typename Base::ScalarSize;
-    using ShapeGroup = ShapeGroup<Float, Spectrum>;
 
     Instance(const Properties &props) {
         m_id = props.id();
